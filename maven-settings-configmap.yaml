@@ -1,0 +1,65 @@
+apiVersion: v1
+data:
+  settings.xml: |
+  <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <interactiveMode>false</interactiveMode>
+  <pluginGroups/>
+  <servers>
+    <server>
+      <id>upload</id>
+      <username>uploader</username>
+      <password>uploader</password>
+      </server>
+    <server>
+      <id>dependencies</id>
+      <username>uploader</username>
+        <password>uploader</password>
+    </server>
+  </servers>
+  <mirrors>
+      <mirror>
+      <id>dependencies</id>
+      <url>https://nexus.apps.ocp.olympus.jsf/repository/merge-dependencies/</url>
+        <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+  <profiles>
+    <profile>
+        <id>upload-profile</id>
+      <properties>
+        <fortify.auth.token></fortify.auth.token>
+          <altSnapshotDeploymentRepository>upload::default::https://MY_NEXUS/repository/maven-snapshots/</altSnapshotDeploymentRepository>
+           <altReleaseDeploymentRepository>upload::default::https://MY_NEXUS/repository/REALEASES_NOT_ALLOWED_FROM_THIS_AGENT</altReleaseDeploymentRepository>
+                  <altDeploymentRepository>upload::default::https://MY_NEXUS/repository/DEPLOYMENTS_NOT_ALLOWED_FROM_THIS_AGENT</altDeploymentRepository>
+        </properties>
+      <repositories>
+        <repository>
+          <id>upload</id>
+            <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+              <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <url>https://nexus.apps.ocp.olympus.jsf/repository/maven-snapshots/</url>
+            <layout>default</layout>
+        </repository>
+      </repositories>
+      </profile>
+    <profile>
+      <id>nexus</id>
+      <activeByDefault>false</activeByDefault>
+    </profile>
+    <profile>
+      <id>artifactory</id>
+      <activeByDefault>false</activeByDefault>
+      </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>upload-profile</activeProfile>
+    </activeProfiles>
+</settings>"
+kind: ConfigMap
+metadata:
+  labels:
+    jenkins-agent-config: maven
+  name: maven-merge-settings
